@@ -37,11 +37,22 @@ def interactuar_mongodb(datos):
             numero_spo2 = d["spo2"].replace("%", "")
             if int(numero_spo2) < 94:
                 bajos_oxigeno.append(d)
+
+        #Se pide el ID y lo busca en la base de datos
+        id_buscar = input("Escribe el ID a buscar (ejemplo ID-001) o presiona Enter para saltar: ")
+        paciente_encontrado = None
+        if id_buscar != "":
+            paciente_encontrado = coleccion.find_one({"id": id_buscar}, {"_id": 0})
+            if paciente_encontrado != None:
+                print("Paciente encontrado: " + str(paciente_encontrado))
+            else:
+                print("No se encontro ningun paciente con ese ID.")
         
         #Exportar resultado
         resultados = {
             "promedio_frecuencia_cardiaca": promedio,
-            "pacientes_peligro_oxigeno": bajos_oxigeno
+            "pacientes_peligro_oxigeno": bajos_oxigeno,
+            "paciente_consultado": paciente_encontrado
         }
         
         archivo_res = open("resultados_mongo.json", "w", encoding="utf-8")

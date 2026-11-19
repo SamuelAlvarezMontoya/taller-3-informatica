@@ -44,3 +44,46 @@ def validar_registro(registro):
     if not "%" in registro["spo2"]:
         return False
     return True
+
+def escribir_log(mensaje):
+    archivo_log = open("log.txt", "a")
+    archivo_log.write(str(datetime.now()) + " - " + mensaje + "\n")
+    archivo_log.close()
+
+def gestionar_archivos(datos):
+    if not os.path.exists("data"):
+        os.makedirs("data")
+    if not os.path.exists("data/txt"):
+        os.makedirs("data/txt")
+    if not os.path.exists("data/csv"):
+        os.makedirs("data/csv")
+    if not os.path.exists("data/json"):
+        os.makedirs("data/json")
+    
+    try:
+
+        archivo_txt = open("datos.txt", "w", encoding="utf-8")
+        for d in datos:
+            linea = d['id'] + ", " + d['fr'] + ", " + d['fc'] + ", " + d['spo2'] + "\n"
+            archivo_txt.write(linea)
+        archivo_txt.close()
+        shutil.move("datos.txt", "data/txt/datos.txt")
+        
+        #Archivo CSV
+        archivo_csv = open("datos.csv", "w", newline='', encoding="utf-8")
+        escritor = csv.DictWriter(archivo_csv, fieldnames=["id", "fr", "fc", "spo2"])
+        escritor.writeheader()
+        for d in datos:
+            escritor.writerow(d)
+        archivo_csv.close()
+        shutil.move("datos.csv", "data/csv/datos.csv")
+        
+        #Archivo json
+        archivo_json = open("datos.json", "w", encoding="utf-8")
+        json.dump(datos, archivo_json, indent=4)
+        archivo_json.close()
+        shutil.move("datos.json", "data/json/datos.json")
+        
+        escribir_log("Archivos guardados en sus carpetas")
+    except Exception as error:
+        escribir_log("Error al crear archivos: " + str(error))

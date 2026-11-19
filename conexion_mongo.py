@@ -38,15 +38,20 @@ def interactuar_mongodb(datos):
             if int(numero_spo2) < 94:
                 bajos_oxigeno.append(d)
 
-        #Se pide el ID y lo busca en la base de datos
+        #Se pide el ID y busca en la base de datos
         id_buscar = input("Escribe el ID a buscar (ejemplo ID-001) o presiona Enter para saltar: ")
         paciente_encontrado = None
         if id_buscar != "":
             paciente_encontrado = coleccion.find_one({"id": id_buscar}, {"_id": 0})
             if paciente_encontrado != None:
-                print("Paciente encontrado: " + str(paciente_encontrado))
+                print("\n--- Datos del Paciente ---")
+                print("ID: " + str(paciente_encontrado["id"]))
+                print("Edad: " + str(paciente_encontrado["fr"]))
+                print("Frecuencia Cardiaca: " + str(paciente_encontrado["fc"]))
+                print("Saturacion (SpO2): " + str(paciente_encontrado["spo2"]))
+                print("")
             else:
-                print("No se encontro ningun paciente con ese ID.")
+                print("\nNo se encontró ningún paciente con ese ID.\n")
         
         #Exportar resultado
         resultados = {

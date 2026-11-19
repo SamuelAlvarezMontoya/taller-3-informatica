@@ -4,7 +4,6 @@ import csv
 import json
 import shutil
 from datetime import datetime
-from pymongo import MongoClient
 
 def generar_datos():
     datos = []
@@ -87,3 +86,36 @@ def gestionar_archivos(datos):
         escribir_log("Archivos guardados en sus carpetas")
     except Exception as error:
         escribir_log("Error al crear archivos: " + str(error))
+
+def ingresar_datos_manuales():
+    lista_manual = []
+    cantidad = int(input("\n¿Cuantos pacientes quieres ingresar?: "))
+    
+    for i in range(cantidad):
+        print("\nPaciente " + str(i + 1) + ":")
+        nuevo_id = input("Ingresa el ID (ejemplo ID-051): ")
+        nueva_edad = input("Ingresa la edad (ejemplo 25 Años): ")
+        nueva_fc = input("Ingresa la frecuencia cardiaca (ejemplo 085ppm): ")
+        nuevo_spo2 = input("Ingresa el SpO2 (ejemplo 97%): ")
+        
+        registro = {
+            "id": nuevo_id,
+            "fr": nueva_edad,
+            "fc": nueva_fc,
+            "spo2": nuevo_spo2
+        }
+        lista_manual.append(registro)
+        
+    return lista_manual
+
+def importar_json():
+    ruta = "data/json/datos.json"
+    if os.path.exists(ruta):
+        archivo = open(ruta, "r", encoding="utf-8")
+        datos_cargados = json.load(archivo)
+        archivo.close()
+        escribir_log("Datos importados desde data/json/datos.json")
+        return datos_cargados
+    else:
+        print("Aun no has exportado el archivo JSON.")
+        return []
